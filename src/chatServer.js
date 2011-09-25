@@ -19,4 +19,37 @@
 
 // Module for network connections
 var net = require('net');
+// Helper Module for new line terminated protocols
+var carrier = require('carrier');
+//User object constructor
+function user(uname,conn){
+	this.username=uname;
+	this.conn=conn;
+}
+//Array to keep track of online users
+var onlineUsers = [];
+
+var server = new net.createServer(function(conn){
+	console.log("Connection Established\n");
+	var u = new user();
+	conn.write("Hello World!\n");
+	conn.write("Enter Username : ");
+	carrier.carry(conn,function(line){
+		if(!u.username){
+			u.username = line;
+			u.conn=conn;
+			onlineUsers.push(u);
+		}
+		if(line == "quit"){
+			conn.end();
+			onlineUsers.splice(onlineUsers.indexOf(u),1);
+		}
+		formattedLine = u.username + " : " + line + "\n";
+		onlineUsers.forEach(function(person){
+			if(person.username!=u.username){
+				person.conn.write(formattedLine);
+			}
+		});
+	});
+}).listen(9994);
 
