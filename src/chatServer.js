@@ -32,7 +32,17 @@ var onlineUsers = [];
 var server = new net.createServer(function(conn){
 	console.log("Connection Established\n");
 	var u = new user();
-	conn.write("Hello World!\n");
+	conn.write("Welcome to chatServer!\n");
+	if(onlineUsers.length==0){
+		conn.write("There are no users online. Please wait for new users to join.\n");
+	}
+	else{
+		userList = "";
+		onlineUsers.forEach(function(person){
+			userList =  person.username + '\t';
+		});
+		conn.write("Online Users : " + userList + "\n");
+	}
 	conn.write("Enter Username : ");
 	carrier.carry(conn,function(line){
 		if(!u.username){
