@@ -1,5 +1,6 @@
 /**
 * A chat server over TCP written in javascript using node.js
+* The source is available at http://github.com/swvist/chatServer
 * @author Vipin Nair <swvist@gmail.com>
 * @copyright Copyright (C) 2011, Vipin Nair 
 *
