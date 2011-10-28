@@ -18,22 +18,51 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Module for network connections
+/**
+* Module for network connections
+*/
 var net = require('net');
-// Helper Module for new line terminated protocols
+
+/**
+* Helper Module for new line terminated protocols
+*/
 var carrier = require('carrier');
-//User object constructor
+
+/**
+* User object constructor
+*/
 function user(uname,conn){
 	this.username=uname;
 	this.conn=conn;
 }
-//Array to keep track of online users
+
+/**
+* Array to keep track of online users
+*/
 var onlineUsers = [];
+
+/**
+* Returns the reciever details from the message
+*/
+function toUser(str){
+	if(str.charAt(0)==='@'){
+		var uname = (str.split(' ',1)).toString();
+		return uname.slice(1,uname.length);
+	}
+}
+
+/**
+* Returns the string after removing reciever details
+*/
+function extractMessage(str){
+	return str.substr(str.indexOf(' ')+1,str.length);
+}
+
 
 var server = new net.createServer(function(conn){
 	console.log("Connection Established\n");
 	var u = new user();
-	conn.write("Welcome to chatServer!\n");
+	conn.write("\n\nWelcome to chatServer V1.0\nThis a free software published under GPLv3\nType '@<USERNAME> <MESSSAGE>' to chat with <USERNAME>\nType '@All <MESSAGE>' to brodcast a message to everyone.\n");
 	if(onlineUsers.length==0){
 		conn.write("There are no users online. Please wait for new users to join.\n");
 	}
@@ -55,12 +84,19 @@ var server = new net.createServer(function(conn){
 			conn.end();
 			onlineUsers.splice(onlineUsers.indexOf(u),1);
 		}
-		formattedLine = u.username + " : " + line + "\n";
+		reciever = toUser(line);
+		msg = extractMessage(line);
+		formattedLine = u.username + "=>" +reciever+" : "+ msg + "\n";
 		onlineUsers.forEach(function(person){
-			if(person.username!=u.username){
+			if(reciever!="All"){
+				if(person.username!=u.username && person.username==reciever){
+					person.conn.write(formattedLine);
+				}
+			}
+			else{
 				person.conn.write(formattedLine);
 			}
 		});
 	});
-}).listen(9994);
+}).listen(9999);
 
