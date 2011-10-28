@@ -15,13 +15,13 @@ A simple chat server over TCP written in JavaScript using node.js
 
 	telnet localhost 9999
 
-### To send a message to <USERNAME>
-
+### To send a message to 'USERNAME'
 	@<USERNAME> <MESSAGE>
 
 ### To broadcast a message to all online users
 
 	@All <MESSAGE>
+
 
 ## Reference
 
